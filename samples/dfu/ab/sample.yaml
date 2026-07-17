@@ -17,6 +17,8 @@ tests:
     integration_platforms:
       - nrf54h20dk/nrf54h20/cpuapp
       - nrf54l15dk/nrf54l15/cpuapp
+    extra_args:
+      - CONFIG_BT_HCI_IPC_ENDPOINT_BOUND_TIMEOUT_MS=5000
 
   sample.dfu.ab.s2ram:
     extra_args:
@@ -25,6 +27,7 @@ tests:
       - CONFIG_PM_DEVICE=y
       - CONFIG_PM_DEVICE_RUNTIME=y
       - CONFIG_POWEROFF=y
+      - CONFIG_BT_HCI_IPC_ENDPOINT_BOUND_TIMEOUT_MS=5000
     platform_allow:
       - nrf54h20dk/nrf54h20/cpuapp
     integration_platforms:
