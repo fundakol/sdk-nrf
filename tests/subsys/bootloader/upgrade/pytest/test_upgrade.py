@@ -9,13 +9,14 @@ from __future__ import annotations
 import logging
 
 import pytest
-from twister_harness import DeviceAdapter, MCUmgr, Shell
+from twister_harness import DeviceAdapter, Shell
+from twister_harness_ext.helpers.nrfutil_mcumgr import NrfutilMCUmgr
 from upgrade_test_manager import UpgradeTestWithMCUmgr
 
 logger = logging.getLogger(__name__)
 
 
-def test_upgrade_with_confirm(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr):
+def test_upgrade_with_confirm(dut: DeviceAdapter, shell: Shell, nrfutil: NrfutilMCUmgr):
     """Verify that the application can be updated.
 
     APP based on smp_svr, MCUboot is the primary bootloader.
@@ -25,7 +26,7 @@ def test_upgrade_with_confirm(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr):
         Confirm image. Reset DUT.
     Verify that the new application is still booted.
     """
-    tm = UpgradeTestWithMCUmgr(dut, shell, mcumgr)
+    tm = UpgradeTestWithMCUmgr(dut, shell, nrfutil)
     tm.increase_version()
     updated_app = tm.generate_image()
     tm.run_upgrade(updated_app)
@@ -38,7 +39,7 @@ def test_upgrade_with_confirm(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr):
 
 
 @pytest.mark.usefixtures("kmu_provision")
-def test_upgrade_with_revert(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr):
+def test_upgrade_with_revert(dut: DeviceAdapter, shell: Shell, nrfutil: NrfutilMCUmgr):
     """Verify that MCUboot will roll back an image that is not confirmed.
 
     APP based on smp_svr, MCUboot is the primary bootloader.
@@ -48,7 +49,7 @@ def test_upgrade_with_revert(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr):
         Reset DUT without confirming the image.
     Verify that MCUboot reverts update.
     """
-    tm = UpgradeTestWithMCUmgr(dut, shell, mcumgr)
+    tm = UpgradeTestWithMCUmgr(dut, shell, nrfutil)
     tm.increase_version()
     updated_app = tm.generate_image()
     tm.run_upgrade(updated_app)
@@ -62,7 +63,7 @@ def test_upgrade_with_revert(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr):
     tm.verify_swap_in_boot_log(swap_type="revert", version=tm.origin_mcuboot_version)
 
 
-def test_sw_downgrade_prevention(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr):
+def test_sw_downgrade_prevention(dut: DeviceAdapter, shell: Shell, nrfutil: NrfutilMCUmgr):
     """Verify that the application is not downgraded.
 
     APP based on smp_svr, MCUboot is the primary bootloader.
@@ -71,7 +72,7 @@ def test_sw_downgrade_prevention(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmg
         Test or confirm image. Reset DUT.
     Verify that downgrade prevention mechanism blocked the image swap.
     """
-    tm = UpgradeTestWithMCUmgr(dut, shell, mcumgr)
+    tm = UpgradeTestWithMCUmgr(dut, shell, nrfutil)
     tm.decrease_version()
     updated_app = tm.generate_image()
     tm.run_upgrade(updated_app)
@@ -85,7 +86,7 @@ def test_sw_downgrade_prevention(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmg
 
 
 @pytest.mark.nightly
-def test_upgrade_multiple_times(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr):
+def test_upgrade_multiple_times(dut: DeviceAdapter, shell: Shell, nrfutil: NrfutilMCUmgr):
     """Verify that the application can be updated multiple times.
 
     APP based on smp_svr, MCUboot is the primary bootloader.
@@ -94,7 +95,7 @@ def test_upgrade_multiple_times(dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr
         Verify that the updated application is booted.
     Repeat the process.
     """
-    tm = UpgradeTestWithMCUmgr(dut, shell, mcumgr)
+    tm = UpgradeTestWithMCUmgr(dut, shell, nrfutil)
     for _ in range(2):
         tm.increase_version()
         updated_app = tm.generate_image()

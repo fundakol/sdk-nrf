@@ -16,6 +16,7 @@ from parameters import BuildParameters
 from twister_harness import DeviceAdapter, MCUmgr, Shell
 from twister_harness.helpers.shell import ShellMCUbootCommandParsed
 from twister_harness.helpers.utils import find_in_config
+from twister_harness_ext.helpers.nrfutil_mcumgr import NrfutilMCUmgr
 from twister_harness_ext.utils.dts_helper import get_code_partition_address
 from twister_harness_ext.utils.helpers import retry, timer
 from twister_harness_ext.utils.imgtool_wrapper import imgtool_sign
@@ -243,7 +244,7 @@ class UpgradeTestManager(ABC):
 class UpgradeTestWithMCUmgr(UpgradeTestManager):
     """Upgrade test manager using MCUmgr for image operations."""
 
-    def __init__(self, dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr):
+    def __init__(self, dut: DeviceAdapter, shell: Shell, mcumgr: MCUmgr | NrfutilMCUmgr):
         """Initialize UpgradeTestWithMCUmgr with DUT, shell, and MCUmgr."""
         super().__init__(dut, shell)
         self.mcumgr = mcumgr

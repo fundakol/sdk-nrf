@@ -10,6 +10,8 @@ import textwrap
 
 import pytest
 
+pytest_plugins = ('twister_harness_ext.fixtures',)
+
 USED_MARKERS = [
     # Test cycle:
     "commit: run on commit, every test without nightly or weekly marker get this marker",
